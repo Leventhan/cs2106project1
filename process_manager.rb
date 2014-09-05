@@ -1,4 +1,7 @@
 #!/usr/bin/env ruby
+load 'process.rb'
+load 'resource.rb'
+load 'ready_list.rb'
 
 class ProcessManager
   attr_accessor :resources
