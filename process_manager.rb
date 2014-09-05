@@ -4,13 +4,11 @@ load 'resource.rb'
 load 'ready_list.rb'
 
 class ProcessManager
-  attr_accessor :resources
+  attr_accessor :resources, :ready_list
 
   def initialize()
-    # Create Init process
-    # Create ReadyList, add Init to ReadyList
-    # Create Resources R1 - R4
-    @resources = Resource.seed_resources
+    @ready_list = ReadyList.new # Create ReadyList + Add Init to ReadyList
+    @resources = Resource.seed_resources # Create Resources R1 - R4
   end
 
   def create(init_params)
@@ -37,5 +35,20 @@ class ProcessManager
     # TODO
   end
 
+  # Helper methods
+  def print_processes
+    # TODO
+  end
 
+  def print_resources
+    # TODO
+  end
+
+  def print_process(pid)
+    # TODO
+  end
+
+  def print_resource(rid)
+    # TODO
+  end
 end

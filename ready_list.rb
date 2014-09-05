@@ -1,10 +1,14 @@
 #!/usr/bin/env ruby
 
+load 'process.rb'
+
 class ReadyList
   attr_accessor :processes
 
   def initialize
     @processes = [[],[],[]]
+    init = Pprocess.new(0, :running, nil, self, 0)
+    insert init, 0
   end
 
   def insert(process, priority)

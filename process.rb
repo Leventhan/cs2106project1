@@ -1,12 +1,17 @@
 #!/usr/bin/env ruby
 
-class Process
+class Pprocess
   attr_accessor :pid, :other_resources, :status_type, :status_list, :parent, :children, :priority
+  STATUS_TYPE = [:running, :ready, :blocked] #TODO: validate status_type in this constant
 
-  def initialize()
+  def initialize(pid, status_type, status_list, parent, priority)
+    @pid = pid
+    @status_type = status_type
+    @status_list = status_list
+    @parent = parent
+    @priority = priority
     @other_resources = []
-    @status_type = :ready
-    @status_list = [] #TODO: ready list pointer
+    @status_list = [] # Either Ready List or Blocked List
     @children = []
   end
 end
