@@ -13,6 +13,11 @@ class ProcessManager
     @resources = Resource.seed_resources # Create Resources R1 - R4
   end
 
+  def current_process
+    # Helper: returns currently running process
+    @ready_list.find_running
+  end
+
   def create(pid, status_type, status_list, parent, priority)
     p = Pprocess.new(pid, status_type, status_list, parent, priority)
     # - link PCB to Creation_Tree
@@ -30,12 +35,12 @@ class ProcessManager
     r = get_resource(rid)
     if r.count >= number_of_units
       r.count -= number_of_units
-      # self.other_resources.insert(r, n)
+      running.other_resources.insert({r: number}) #TODO: standardize schema of process other_resources
     else
-      # self.status_type = :blocked
-      # self.status_list = r;
-      # Ready_List.remove(self)
-      # r.Waiting_List.insert(self)
+      running.status_type = :blocked
+      running.status_list = r;
+      @ready_list.remove(running)
+      r.waiting_list.insert(running)
     end
     scheduler() # Scheduler();
   end
