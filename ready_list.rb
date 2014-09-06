@@ -6,8 +6,33 @@ class ReadyList
 
   def initialize
     @processes = [[],[],[]]
-    init = Pprocess.new(0, :running, nil, self, 0)
+    init = Pprocess.new(0, :running, nil, self, 0) # Create and Add Init to ReadyList
     insert init, 0
+  end
+
+  def find(pid)
+    @processes.each {|queue| queue.each {|p| p.pid == pid ? p : nil}}
+  end
+
+  def find_running_processes
+    running = []
+    @processes.each {|queue| queue.each {|p| running << p if p.status_type == :running}}
+    return running
+  end
+
+  def find_running
+    processes = find_running_processes
+    if processes.any?
+      return processes[0]
+    end
+  end
+
+  def print_running
+    p find_running
+  end
+
+  def find_highest_priority
+    @processes[0].first ||  @processes[1].first || @processes[2].first
   end
 
   def insert(process, priority)

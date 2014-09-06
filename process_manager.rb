@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+
+require 'awesome_print'
 load 'process.rb'
 load 'resource.rb'
 load 'ready_list.rb'
@@ -11,35 +13,35 @@ class ProcessManager
     @resources = Resource.seed_resources # Create Resources R1 - R4
   end
 
-  def create(init_params)
-    # TODO
-    # - create PCB using init_params
+  def create(pid, status_type, status_list, parent, priority)
+    p = Pprocess.new(pid, status_type, status_list, parent, priority)
     # - link PCB to Creation_Tree
-    # - insert PCB to tail of Ready List i.e. insert(RL, PCB)
-    # - Scheduler(); -> this finds the highest priority process in the RL and makes it running and others ready/blocked
+    @ready_list.insert(p, priority)
+    scheduler()
   end
 
   def destroy(pid)
-    # - get PCB p given pid
-    # - Kill_tree(p)
-    # - Scheduler();
+    p = get_process(pid)
+    kill_tree(p)
+    scheduler()
   end
 
   def request(rid, number_of_units)
-    # r = get_RCB(rid)
-    # if r.count >= number_of_units
-    #   r.count -= number_of_units
-    #   self.other_resources.insert(r, n)
-    # else
-    #   self.status_type = :blocked
-    #   self.status_list = r;
-    #   Ready_List.remove(self)
-    #   r.Waiting_List.insert(self)
-    # Scheduler();
+    r = get_resource(rid)
+    if r.count >= number_of_units
+      r.count -= number_of_units
+      # self.other_resources.insert(r, n)
+    else
+      # self.status_type = :blocked
+      # self.status_list = r;
+      # Ready_List.remove(self)
+      # r.Waiting_List.insert(self)
+    end
+    scheduler() # Scheduler();
   end
 
   def release(rid)
-    # r = get_RCB(rid)
+    r = get_resource(rid)
     # self.other_resource.remove(r, n)
     # r.count += n
     # q = r.waiting_list.first
@@ -50,50 +52,56 @@ class ProcessManager
     #   q.status_list = Ready_List
     #   q.other_resources.insert(r,n)
     #   Ready_List.insert(q)
-    #   Scheduler();
+    scheduler()
   end
 
   def time_out
-    # - find running process q
-    # - Ready_List.remove(q)
-    # - q.status_type = :ready
-    # - Ready_List.insert(q)
-    # - Scheduler();
+    p = @ready_list.find_running
+    @ready_list.remove(p)
+    p.status_type = :ready
+    @ready_list.insert(p)
+    scheduler()
   end
 
   def scheduler
-    # - find highest priority process p
-    # if self.priority < p.priority || self.status_type != :running || self == nil
-    #   preempt(p,self)
+    #  this finds the highest priority process in the RL and makes it running and others ready/blocked
+    p = @ready_list.find_highest_priority
+    if self.priority < p.priority || self.status_type != :running || self == nil
+      preempt(p)
+    end
+  end
 
-    # preempt(p, self):
-    #   p.status_type = :running
-    #   output name of running process
-
-    # Note: in the conditional,
-    # - 1st condition is called from create or destroy
-    # - 2nd condition is from request or time out
-    # - 3rd condition from destroy
+  def preempt(p)
+    p.status_type = :running
+    @ready_list.print_running
   end
 
   # Printer methods
   def print_processes
-    # TODO
+    ap @ready_list.processes
   end
 
   def print_resources
-    # TODO
+    ap @resources
   end
 
   def print_process(pid)
-    # TODO
+    ap get_process(pid)
   end
 
   def print_resource(rid)
-    # TODO
+    ap get_resource(rid)
   end
 
   # Helper methods
+  def get_process(pid)
+    @ready_list.find(pid)
+  end
+
+  def get_resource(rid)
+    @resources[rid]
+  end
+
   def kill_tree(p)
     # - for all p.children q, kill_tree(q)
     # - free resources

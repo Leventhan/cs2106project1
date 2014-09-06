@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-
 class Resource
   attr_accessor :rid, :status_max, :status_current, :waiting_list
 
@@ -12,8 +11,8 @@ class Resource
 
   def self.seed_resources
     resources = []
-    1..5.times do |count|
-      resources << self.new(count, count, count)
+    4.times do |count|
+      resources << self.new(count+1, count+1, count+1)
     end
     return resources
   end

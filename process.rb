@@ -1,8 +1,7 @@
 #!/usr/bin/env ruby
-
 class Pprocess
   attr_accessor :pid, :other_resources, :status_type, :status_list, :parent, :children, :priority
-  STATUS_TYPE = [:running, :ready, :blocked] #TODO: validate status_type in this constant
+  # STATUS_TYPE = [:running, :ready, :blocked] #TODO: validate status_type in this constant
 
   def initialize(pid, status_type, status_list, parent, priority)
     @pid = pid
