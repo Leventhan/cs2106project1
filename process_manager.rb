@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'debugger'
 require 'awesome_print'
 load 'process.rb'
 load 'resource.rb'
@@ -13,13 +14,8 @@ class ProcessManager
     @resources = Resource.seed_resources # Create Resources R1 - R4
   end
 
-  def current_process
-    # Helper: returns currently running process
-    @ready_list.find_running
-  end
-
-  def create(pid, status_type, status_list, parent, priority)
-    p = Pprocess.new(pid, status_type, status_list, parent, priority)
+  def create(pid, priority)
+    p = Pprocess.new(pid, :ready, @ready_list, :ready, priority) #Set running as created process parent
     # - link PCB to Creation_Tree
     @ready_list.insert(p, priority)
     scheduler()
@@ -33,8 +29,9 @@ class ProcessManager
 
   def request(rid, number_of_units)
     r = get_resource(rid)
-    if r.count >= number_of_units
-      r.count -= number_of_units
+    running = @ready_list.find_running
+    if r.units_current >= number_of_units
+      r.units_current -= number_of_units
       running.other_resources.insert({r: number}) #TODO: standardize schema of process other_resources
     else
       running.status_type = :blocked
@@ -42,21 +39,23 @@ class ProcessManager
       @ready_list.remove(running)
       r.waiting_list.insert(running)
     end
-    scheduler() # Scheduler();
+    scheduler()
   end
 
   def release(rid)
     r = get_resource(rid)
-    # self.other_resource.remove(r, n)
-    # r.count += n
-    # q = r.waiting_list.first
-    # while q.not_empty? && r.count > q.requested_number_of_units
-    #   r.count -= q.first.requested_number_of_units
-    #   r.waiting_list.remove(q)
-    #   q.status_type = :ready
-    #   q.status_list = Ready_List
-    #   q.other_resources.insert(r,n)
-    #   Ready_List.insert(q)
+    running = @ready_list.find_running
+    running.other_resources.remove(r) #TODO: make sure this removes the dict with r key
+    r.units_current += n #TODO: this n should refer to the n of the dict removed above
+    q = r.waiting_list.first
+    while q.not_empty? && r.units_current > q.requested_number_of_units #requested number of units refer to waiting list amount
+      r.units_current -= q.first.requested_number_of_units
+      r.waiting_list.remove(q)
+      q.status_type = :ready
+      q.status_list = @ready_list
+      q.other_resources.insert(r,requested_number_of_units)
+      Ready_List.insert(q)
+    end
     scheduler()
   end
 
@@ -70,8 +69,10 @@ class ProcessManager
 
   def scheduler
     #  this finds the highest priority process in the RL and makes it running and others ready/blocked
-    p = @ready_list.find_highest_priority
-    if self.priority < p.priority || self.status_type != :running || self == nil
+    p = @ready_list.find_highest_priority #TODO: debug, this doesn't work
+    running = @ready_list.find_running
+    if running.priority < p.priority || running.status_type != :running || running == nil
+      running.status_type = :ready# Make running process ready?
       preempt(p)
     end
   end
@@ -108,6 +109,7 @@ class ProcessManager
   end
 
   def kill_tree(p)
+    #  Use rubytree gem
     # - for all p.children q, kill_tree(q)
     # - free resources
     # - delete PCB and update all pointers

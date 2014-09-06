@@ -24,15 +24,22 @@ class ReadyList
     processes = find_running_processes
     if processes.any?
       return processes[0]
+    else
+      raise Exception.new("No currently running processes!")
     end
   end
 
   def print_running
-    p find_running
+    p "Process #{find_running.pid} is running"
   end
 
   def find_highest_priority
-    @processes[0].first ||  @processes[1].first || @processes[2].first
+    # TODO: debug, not working
+    debugger
+    highest_priority = (@processes[2].first || @processes[0].first ||  @processes[1].first)
+    # unless highest_priority
+    #   raise Exception.new("No highest priority process!")
+    # end
   end
 
   def insert(process, priority)

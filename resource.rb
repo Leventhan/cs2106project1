@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 class Resource
-  attr_accessor :rid, :status_max, :status_current, :waiting_list
+  attr_accessor :rid, :units_max, :units_current, :waiting_list
 
-  def initialize(rid, status_max, status_current)
+  def initialize(rid, units_max, units_current)
     @rid = rid
-    @status_max = status_max
-    @status_current = status_current
+    @units_max = units_max
+    @units_current = units_current
     @waiting_list = []
   end
 
