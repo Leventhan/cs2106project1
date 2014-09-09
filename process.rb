@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+
+# This is not a typo, Process is a reserved keyword in Ruby
 class Pprocess
   attr_accessor :pid, :other_resources, :status_type, :status_list, :parent, :children, :priority
   # STATUS_TYPE = [:running, :ready, :blocked] #TODO: validate status_type in this constant

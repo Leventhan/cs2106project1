@@ -69,7 +69,7 @@ class ProcessManager
 
   def scheduler
     #  this finds the highest priority process in the RL and makes it running and others ready/blocked
-    p = @ready_list.find_highest_priority #TODO: debug, this doesn't work
+    p = @ready_list.find_highest_priority
     running = @ready_list.find_running
     if running.priority < p.priority || running.status_type != :running || running == nil
       running.status_type = :ready# Make running process ready?

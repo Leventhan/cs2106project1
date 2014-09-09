@@ -34,12 +34,11 @@ class ReadyList
   end
 
   def find_highest_priority
-    # TODO: debug, not working
-    debugger
-    highest_priority = (@processes[2].first || @processes[0].first ||  @processes[1].first)
-    # unless highest_priority
-    #   raise Exception.new("No highest priority process!")
-    # end
+    highest = @processes[2].first || @processes[0].first ||  @processes[1].first
+    unless highest
+      raise Exception.new("No highest priority process!")
+    end
+    return highest
   end
 
   def insert(process, priority)
