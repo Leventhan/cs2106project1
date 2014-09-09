@@ -6,31 +6,29 @@ class ReadyList
 
   def initialize
     @processes = [[],[],[]]
-    init = Pprocess.new(0, :running, nil, self, 0) # Create and Add Init to ReadyList
-    insert init, 0
+    init = Pprocess.new("init", :running, nil, self, 0) # Create and Add Init to ReadyList
+    insert init
   end
 
   def find(pid)
     @processes.each {|queue| queue.each {|p| p.pid == pid ? p : nil}}
   end
 
-  def find_running_processes
+  def find_processes_of_type(status)
     running = []
-    @processes.each {|queue| queue.each {|p| running << p if p.status_type == :running}}
+    @processes.each {|queue| queue.each {|p| running << p if p.status_type == status}}
     return running
   end
 
   def find_running
-    processes = find_running_processes
-    if processes.any?
+    processes = find_processes_of_type(:running)
+    if processes.any? && processes.length > 1
+      raise Exception.new("More than one running process!")
+    elsif processes.any? && processes.length == 1
       return processes[0]
     else
       raise Exception.new("No currently running processes!")
     end
-  end
-
-  def print_running
-    p "Process #{find_running.pid} is running"
   end
 
   def find_highest_priority
@@ -41,13 +39,13 @@ class ReadyList
     return highest
   end
 
-  def insert(process, priority)
-    if invalid_priority? priority
-      raise Exception.new("Invalid Priority value, must be either 0, 1, or 2")
-    elsif invalid_process? process
+  def insert(process)
+    if invalid_process? process
       raise Exception.new("Invalid Process")
+    elsif invalid_priority? process.priority
+      raise Exception.new("Invalid Priority value, must be either 0, 1, or 2")
     end
-    @processes[priority].push process
+    @processes[process.priority].push process
   end
 
   def remove(process)

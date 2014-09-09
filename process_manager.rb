@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
-require 'debugger'
 require 'awesome_print'
 load 'process.rb'
 load 'resource.rb'
@@ -17,7 +16,7 @@ class ProcessManager
   def create(pid, priority)
     p = Pprocess.new(pid, :ready, @ready_list, :ready, priority) #Set running as created process parent
     # - link PCB to Creation_Tree
-    @ready_list.insert(p, priority)
+    @ready_list.insert(p)
     scheduler()
   end
 
@@ -62,27 +61,33 @@ class ProcessManager
   def time_out
     p = @ready_list.find_running
     @ready_list.remove(p)
-    p.status_type = :ready
     @ready_list.insert(p)
     scheduler()
   end
 
   def scheduler
-    #  this finds the highest priority process in the RL and makes it running and others ready/blocked
     p = @ready_list.find_highest_priority
     running = @ready_list.find_running
-    if running.priority < p.priority || running.status_type != :running || running == nil
-      running.status_type = :ready# Make running process ready?
+    if running.priority < p.priority || p.status_type != :running || p == nil
+      running.status_type = :ready
       preempt(p)
     end
+    print_running
   end
 
   def preempt(p)
     p.status_type = :running
-    @ready_list.print_running
   end
 
   # Printer methods
+  def print_running
+    p "Process #{@ready_list.find_running.pid} is running"
+  end
+
+  def print_ready_processes
+    ap @ready_list.find_processes_of_type(:ready).map(&:pid)
+  end
+
   def print_processes
     ap @ready_list.processes
   end

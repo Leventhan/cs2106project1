@@ -12,7 +12,7 @@ class Resource
   def self.seed_resources
     resources = []
     4.times do |count|
-      resources << self.new(count+1, count+1, count+1)
+      resources << self.new("R#{(count+1)}", count+1, count+1)
     end
     return resources
   end
