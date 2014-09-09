@@ -14,7 +14,7 @@ class ProcessManager
   end
 
   def create(pid, priority)
-    p = Pprocess.new(pid, :ready, @ready_list, :ready, priority) #Set running as created process parent
+    p = Pprocess.new(pid, :ready, @ready_list, nil, priority) #Parent not implemented
     # - link PCB to Creation_Tree
     @ready_list.insert(p)
     scheduler()
@@ -31,7 +31,7 @@ class ProcessManager
     running = @ready_list.find_running
     if r.units_current >= number_of_units
       r.units_current -= number_of_units
-      running.other_resources.insert({r: number}) #TODO: standardize schema of process other_resources
+      running.other_resources[rid] = number_of_units # other_resources is a hash with format RID: units_used
     else
       running.status_type = :blocked
       running.status_list = r;
@@ -68,8 +68,8 @@ class ProcessManager
   def scheduler
     p = @ready_list.find_highest_priority
     running = @ready_list.find_running
-    if running.priority < p.priority || p.status_type != :running || p == nil
-      running.status_type = :ready
+    if running == nil || running.priority < p.priority || p.status_type != :running
+      running.status_type = :ready if running != nil
       preempt(p)
     end
     print_running
@@ -110,7 +110,8 @@ class ProcessManager
   end
 
   def get_resource(rid)
-    @resources[rid]
+    index = rid[-1].to_i - 1 #HAX
+    @resources[index]
   end
 
   def kill_tree(p)

@@ -27,7 +27,8 @@ class ReadyList
     elsif processes.any? && processes.length == 1
       return processes[0]
     else
-      raise Exception.new("No currently running processes!")
+      nil
+      # raise Exception.new("No currently running processes!")
     end
   end
 

@@ -11,7 +11,7 @@ class Pprocess
     @status_list = status_list
     @parent = parent
     @priority = priority
-    @other_resources = []
+    @other_resources = {}
     @status_list = [] # Either Ready List or Blocked List
     @children = []
   end
