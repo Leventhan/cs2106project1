@@ -4,18 +4,21 @@ require 'awesome_print'
 load 'process.rb'
 load 'resource.rb'
 load 'ready_list.rb'
+load 'creation_tree.rb'
 
 class ProcessManager
-  attr_accessor :resources, :ready_list
+  attr_accessor :resources, :creation_tree, :ready_list
 
   def initialize()
     @ready_list = ReadyList.new # Create ReadyList + Add Init to ReadyList
+    @creation_tree = CreationTree.new(@ready_list.get_init_process) # Create creation tree with init as root
     @resources = Resource.seed_resources # Create Resources R1 - R4
   end
 
   def create(pid, priority)
-    p = Pprocess.new(pid, :ready, @ready_list, nil, priority) #Parent not implemented
-    # - link PCB to Creation_Tree
+    running = @ready_list.find_running
+    p = Pprocess.new(pid, :ready, @ready_list, priority)
+    @creation_tree.insert(p, running)# - Add process p to Creation_Tree as child of currently running process
     @ready_list.insert(p)
     scheduler()
   end
@@ -118,9 +121,6 @@ class ProcessManager
   end
 
   def kill_tree(p)
-    #  Use rubytree gem
-    # - for all p.children q, kill_tree(q)
-    # - free resources
-    # - delete PCB and update all pointers
+    @creation_tree.destroy(p)
   end
 end

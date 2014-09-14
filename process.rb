@@ -5,14 +5,13 @@ class Pprocess
   attr_accessor :pid, :other_resources, :status_type, :status_list, :parent, :children, :priority
   # STATUS_TYPE = [:running, :ready, :blocked] #TODO: validate status_type in this constant
 
-  def initialize(pid, status_type, status_list, parent, priority)
+  def initialize(pid, status_type, status_list, priority)
     @pid = pid
     @status_type = status_type
     @status_list = status_list
-    @parent = parent
     @priority = priority
     @other_resources = {}
     @status_list = [] # Either Ready List or Blocked List
-    @children = []
+    # Parent and Children abstracted to creation_tree
   end
 end

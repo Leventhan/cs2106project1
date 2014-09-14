@@ -6,7 +6,7 @@ class ReadyList
 
   def initialize
     @processes = [[],[],[]]
-    init = Pprocess.new("init", :running, nil, self, 0) # Create and Add Init to ReadyList
+    init = Pprocess.new("init", :running, self, 0) # Create and Add Init to ReadyList
     insert init
   end
 
@@ -51,6 +51,10 @@ class ReadyList
 
   def remove(process)
     @processes.each {|queue| queue.each {|p| queue.delete(p) if p.pid == process.pid }}
+  end
+
+  def get_init_process
+    @processes.first.select{|p| p.pid == "init"}.first
   end
 
   private
