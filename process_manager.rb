@@ -45,11 +45,13 @@ class ProcessManager
     r = get_resource(rid)
     running = @ready_list.find_running
     running.other_resources[rid] -= number_of_units
-    running.other_resources.delete("rid") if (running.other_resources[rid] == 0)
+    running.other_resources.delete("rid") if (running.other_resources[rid] == 0) # Remove empty resource allocations
     r.units_current += number_of_units
-    q = r.waiting_list.first
-    while !q.nil? && r.units_current > q.requested_number_of_units #requested number of units refer to waiting list amount
-      r.units_current -= q.first.requested_number_of_units
+    q = r.waiting_list.first # Q is a process blocked on the released resource
+    requested_number_of_units = q.values[0]
+    binding.pry
+    while !q.nil? && r.units_current > requested_number_of_units #requested number of units refer to waiting list amount
+      r.units_current -= requested_number_of_units
       r.waiting_list.delete(q)
       q.status_type = :ready
       q.status_list = @ready_list

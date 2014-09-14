@@ -10,5 +10,6 @@ p.time_out # => Process z is running
 p.request("R1", 1) # => Process z is running
 p.time_out # => Process x is running
 p.request("R1", 1)
-p.release("R1", 1)
-binding.pry
+p.delete("z")
+# p.release("R1", 1)
+# p.delete("x")
