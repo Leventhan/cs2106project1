@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 class CreationTree
-    # TODO: use rubytree gem
+    # Can be an ARRAY of children!
 end

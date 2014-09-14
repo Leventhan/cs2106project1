@@ -36,23 +36,24 @@ class ProcessManager
       running.status_type = :blocked
       running.status_list = r;
       @ready_list.remove(running)
-      r.waiting_list.insert(running)
+      r.waiting_list << {running.pid => number_of_units} # waiting_list is an ordered list of hashes with format PID: units_needed
     end
     scheduler()
   end
 
-  def release(rid)
+  def release(rid, number_of_units)
     r = get_resource(rid)
     running = @ready_list.find_running
-    running.other_resources.remove(r) #TODO: make sure this removes the dict with r key
-    r.units_current += n #TODO: this n should refer to the n of the dict removed above
+    running.other_resources[rid] -= number_of_units
+    running.other_resources.delete("rid") if (running.other_resources[rid] == 0)
+    r.units_current += number_of_units
     q = r.waiting_list.first
-    while q.not_empty? && r.units_current > q.requested_number_of_units #requested number of units refer to waiting list amount
+    while !q.nil? && r.units_current > q.requested_number_of_units #requested number of units refer to waiting list amount
       r.units_current -= q.first.requested_number_of_units
-      r.waiting_list.remove(q)
+      r.waiting_list.delete(q)
       q.status_type = :ready
       q.status_list = @ready_list
-      q.other_resources.insert(r,requested_number_of_units)
+      q.other_resources[rid] = requested_number_of_units
       Ready_List.insert(q)
     end
     scheduler()
