@@ -9,6 +9,11 @@ class CreationTree
     @root = node(init)
   end
 
+  def print
+    @root.print_tree
+    return nil
+  end
+
   def insert(child_process, parent_process)
     @root.each do |current_node|
       if current_node.content.pid == parent_process.pid
@@ -17,12 +22,22 @@ class CreationTree
     end
   end
 
+  # Destroys nodes in the creation tree, returns a list of destroyed Pids
   def destroy(process)
     # TODO: disallow destroying init process?
     destroyed_pids = []
-    root_node.each { |node| destroyed_pids << node.content.pid }
-    root_node.remove!(node(process))
+    process_node = get_node(process.pid)
+    process_node.each { |node| destroyed_pids << node.content.pid }
+    @root.remove!(node(process))
     return destroyed_pids
+  end
+
+  def get_node(pid)
+    @root.each do |current_node|
+      if current_node.content.pid == pid
+        return current_node
+      end
+    end
   end
 
   def node(process)

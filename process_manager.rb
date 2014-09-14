@@ -121,6 +121,7 @@ class ProcessManager
   end
 
   def kill_tree(p)
-    @creation_tree.destroy(p)
+    destroyed_pids = @creation_tree.destroy(p) #Removes processes from creation_tree
+    @ready_list.remove_pids(destroyed_pids) #Removes processes from ready list
   end
 end

@@ -11,7 +11,13 @@ class ReadyList
   end
 
   def find(pid)
-    @processes.each {|queue| queue.each {|p| p.pid == pid ? p : nil}}
+    results = []
+    @processes.each {|queue| queue.each {|p| results << p if p.pid == pid}}
+    if results.any?
+      return results[0]
+    else
+      raise Exception.new("Process with pid: #{pid} not found")
+    end
   end
 
   def find_processes_of_type(status)
@@ -47,6 +53,11 @@ class ReadyList
       raise Exception.new("Invalid Priority value, must be either 0, 1, or 2")
     end
     @processes[process.priority].push process
+  end
+
+  # Removes processes of a given pid from an array of pids
+  def remove_pids(pids)
+    @processes.each {|queue| queue.each {|p| queue.delete(p) if  pids.include?(p.pid) }}
   end
 
   def remove(process)
