@@ -16,7 +16,8 @@ class ReadyList
     if results.any?
       return results[0]
     else
-      raise Exception.new("Process with pid: #{pid} not found")
+      nil
+      # raise Exception.new("Process with pid: #{pid} not found")
     end
   end
 

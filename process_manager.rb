@@ -27,8 +27,21 @@ class ProcessManager
 
   def destroy(pid)
     p = get_process(pid)
-    kill_tree(p)
+    if p
+      kill_tree(p) #In Ready List
+    else
+      destroy_from_waiting_list(pid) #In Waiting List
+    end
     scheduler()
+  end
+
+  def destroy_from_waiting_list(pid)
+    @resources.each do |resource|
+      resource.waiting_list.select!{|process|
+        waiting_pid = process.first[0]
+        waiting_pid != pid
+      }
+    end
   end
 
   def request(rid, number_of_units)
