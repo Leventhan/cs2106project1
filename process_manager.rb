@@ -45,6 +45,11 @@ class ProcessManager
   end
 
   def release(rid, number_of_units)
+    release_no_sched(rid, number_of_units)
+    scheduler()
+  end
+
+  def release_no_sched(rid, number_of_units)
     r = get_resource(rid)
     running = @ready_list.find_running
     running.other_resources[rid] -= number_of_units
@@ -63,7 +68,6 @@ class ProcessManager
       q.other_resources[rid] = requested_number_of_units
       @ready_list.insert(q)
     end
-    scheduler()
   end
 
   def time_out
@@ -124,15 +128,18 @@ class ProcessManager
 
   def kill_tree(p)
     destroyed_pids = @creation_tree.destroy(p) #Removes processes from creation_tree
-    # TODO: release resources
-    destroyed_pids.each do |pid|
+    release_resouces(destroyed_pids)
+    @ready_list.remove_pids(destroyed_pids) #Removes processes from ready list
+  end
+
+  def release_resouces(pids)
+    pids.each do |pid|
       process = @ready_list.find(pid)
       process.other_resources.each do |resource|
         rid, units = resource
-        release(rid, units)
+        release_no_sched(rid, units)
       end
     end
-
-    @ready_list.remove_pids(destroyed_pids) #Removes processes from ready list
   end
+
 end
