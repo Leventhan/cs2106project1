@@ -51,8 +51,10 @@ class ProcessManager
     running.other_resources.delete("rid") if (running.other_resources[rid] == 0) # Remove empty resource allocations
     r.units_current += number_of_units
     head = r.waiting_list.first # Q is a process blocked on the released resource
-    requested_number_of_units = head.values[0][0]
-    q = head.values[0][1]
+    if head
+      requested_number_of_units = head.values[0][0]
+      q = head.values[0][1]
+    end
     while !head.nil? && r.units_current >= requested_number_of_units #requested number of units refer to waiting list amount
       r.units_current -= requested_number_of_units
       r.waiting_list.delete(head)
