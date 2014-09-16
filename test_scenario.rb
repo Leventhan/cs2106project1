@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 load 'process_manager.rb'
 
-p = ProcessManager.new
+p = ProcessManager.new # => Process Init is running
 p.create("x", 2) # => Process x is running
 p.create("y", 1) # => Process x is running
 p.time_out # => Process x is running

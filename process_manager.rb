@@ -7,12 +7,14 @@ load 'ready_list.rb'
 load 'creation_tree.rb'
 
 class ProcessManager
-  attr_accessor :resources, :creation_tree, :ready_list
+  attr_accessor :resources, :creation_tree, :ready_list, :running_log
 
   def initialize()
     @ready_list = ReadyList.new # Create ReadyList + Add Init to ReadyList
     @creation_tree = CreationTree.new(@ready_list.get_init_process) # Create creation tree with init as root
     @resources = Resource.seed_resources # Create Resources R1 - R4
+    @running_log = []
+    print_running
   end
 
   def create(pid, priority)
@@ -93,7 +95,9 @@ class ProcessManager
 
   # Printer methods
   def print_running
-    p "Process #{@ready_list.find_running.pid} is running"
+    pid = @ready_list.find_running.pid
+    p "Process #{pid} is running"
+    @running_log << pid
   end
 
   def print_ready_processes

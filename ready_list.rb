@@ -39,7 +39,7 @@ class ReadyList
   end
 
   def find_highest_priority
-    highest = @processes[2].first || @processes[0].first ||  @processes[1].first
+    highest = @processes[2].first ||  @processes[1].first || @processes[0].first
     unless highest
       raise Exception.new("No highest priority process!")
     end
