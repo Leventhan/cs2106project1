@@ -30,7 +30,6 @@ class CreationTree
     process_node.each { |node| destroyed_pids << node.content.pid }
     to_be_removed = get_node(process.pid)
     to_be_removed.parent.remove!(to_be_removed)
-    binding.pry
     return destroyed_pids
   end
 

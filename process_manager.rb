@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+    #!/usr/bin/env ruby
 
 require 'awesome_print'
 load 'process.rb'
@@ -50,17 +50,16 @@ class ProcessManager
     running.other_resources[rid] -= number_of_units
     running.other_resources.delete("rid") if (running.other_resources[rid] == 0) # Remove empty resource allocations
     r.units_current += number_of_units
-    binding.pry #TODO
-    q = r.waiting_list.first # Q is a process blocked on the released resource
-    requested_number_of_units = q.values[0]
-    binding.pry
-    while !q.nil? && r.units_current > requested_number_of_units #requested number of units refer to waiting list amount
+    head = r.waiting_list.first # Q is a process blocked on the released resource
+    requested_number_of_units = head.values[0][0]
+    q = head.values[0][1]
+    while !head.nil? && r.units_current >= requested_number_of_units #requested number of units refer to waiting list amount
       r.units_current -= requested_number_of_units
-      r.waiting_list.delete(q)
+      r.waiting_list.delete(head)
       q.status_type = :ready
       q.status_list = @ready_list
       q.other_resources[rid] = requested_number_of_units
-      Ready_List.insert(q)
+      @ready_list.insert(q)
     end
     scheduler()
   end
@@ -123,6 +122,15 @@ class ProcessManager
 
   def kill_tree(p)
     destroyed_pids = @creation_tree.destroy(p) #Removes processes from creation_tree
+    # TODO: release resources
+    destroyed_pids.each do |pid|
+      process = @ready_list.find(pid)
+      process.other_resources.each do |resource|
+        rid, units = resource
+        release(rid, units)
+      end
+    end
+
     @ready_list.remove_pids(destroyed_pids) #Removes processes from ready list
   end
 end

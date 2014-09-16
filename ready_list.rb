@@ -55,9 +55,9 @@ class ReadyList
     @processes[process.priority].push process
   end
 
-  # Removes processes of a given pid from an array of pids
+  # Removes processes of a given pid from an array of pids AND FREES Resources
   def remove_pids(pids)
-    @processes.each {|queue| queue.each {|p| queue.delete(p) if  pids.include?(p.pid) }}
+    @processes.each {|queue| queue.each {|p| queue.delete(p) if pids.include?(p.pid) }}
   end
 
   def remove(process)
