@@ -39,7 +39,7 @@ class ProcessManager
       running.status_type = :blocked
       running.status_list = r;
       @ready_list.remove(running)
-      r.waiting_list << {running.pid => number_of_units} # waiting_list is an ordered list of hashes with format PID: units_needed
+      r.waiting_list << {running.pid => [number_of_units, running]} # waiting_list is an ordered list of hashes with format PID: [units_needed, process]
     end
     scheduler()
   end
@@ -50,6 +50,7 @@ class ProcessManager
     running.other_resources[rid] -= number_of_units
     running.other_resources.delete("rid") if (running.other_resources[rid] == 0) # Remove empty resource allocations
     r.units_current += number_of_units
+    binding.pry #TODO
     q = r.waiting_list.first # Q is a process blocked on the released resource
     requested_number_of_units = q.values[0]
     binding.pry
