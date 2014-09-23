@@ -7,7 +7,7 @@ load 'command.rb'
 File.open(ARGV[0], "r") do |infile|
     pm = ProcessManager.new
     while (line = infile.gets)
-      next if line =="\r\n"
+      next if line =="\r\n" || line =="\n"
 
       command = line.chomp
       is_valid = Command.validate_commmand(command)
