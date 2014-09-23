@@ -14,7 +14,7 @@ class ProcessManager
     @creation_tree = CreationTree.new(@ready_list.get_init_process) # Create creation tree with init as root
     @resources = Resource.seed_resources # Create Resources R1 - R4
     @running_log = []
-    print_running
+    log_running
   end
 
   def create(pid, priority)
@@ -99,7 +99,7 @@ class ProcessManager
       running.status_type = :ready if running != nil
       preempt(p)
     end
-    print_running
+    log_running
   end
 
   def preempt(p)
@@ -107,13 +107,12 @@ class ProcessManager
   end
 
   # Printer methods
-  def print_running
+  def log_running
     pid = @ready_list.find_running.pid
-    # p "Process #{pid} is running"
     @running_log << pid
   end
 
-  def print_error
+  def log_error
     @running_log << "error"
   end
 

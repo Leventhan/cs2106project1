@@ -4,15 +4,18 @@ load 'command.rb'
 
 # TODO: print running log instead of print running
 
-p = ProcessManager.new
 File.open(ARGV[0], "r") do |infile|
+    pm = ProcessManager.new
     while (line = infile.gets)
-      next if line.empty?
+      next if line =="\r\n"
+
       command = line.chomp
       is_valid = Command.validate_commmand(command)
       if is_valid
-        Command.execute_command(command, p)
+        Command.execute_command(command, pm)
       end
+
+      pm = ProcessManager.new if line.include? "init"
     end
-    p p.running_log.join " "
+    p pm.running_log.join " "
 end

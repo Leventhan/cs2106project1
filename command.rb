@@ -32,22 +32,22 @@ class Command
     return true
   end
 
-  def self.execute_command(c, p)
+  def self.execute_command(c, pm)
     args = c.split(" ")
     command = args[0]
     case command
     when "cr"
-      p.create(args[1], Integer(args[2]))
+      pm.create(args[1], Integer(args[2]))
     when "to"
-      p.time_out
+      pm.time_out
     when "de"
-      p.destroy(args[1])
+      pm.destroy(args[1])
     when "req"
-      p.request(args[1], Integer(args[2]))
+      pm.request(args[1], Integer(args[2]))
     when "rel"
-      p.release(args[1], Integer(args[2]))
+      pm.release(args[1], Integer(args[2]))
     when "init"
-      p = ProcessManager.new
+      p pm.running_log.join " " if pm.running_log.size > 1
     else
       raise Exception.new "Invalid command"
     end
