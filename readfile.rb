@@ -19,5 +19,5 @@ File.open(ARGV[0], "r") do |infile|
 
       pm = ProcessManager.new if line.include? "init"
     end
-    p pm.running_log.join " "
+    File.open("a0099317U.txt", 'a') { |file| file.write(pm.running_log.join(" "))}
 end

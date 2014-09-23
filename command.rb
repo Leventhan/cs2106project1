@@ -47,7 +47,7 @@ class Command
     when "rel"
       pm.release(args[1], Integer(args[2]))
     when "init"
-      p pm.running_log.join " " if pm.running_log.size > 1
+      File.open("a0099317U.txt", 'a') { |file| file.write(pm.running_log.join(" ") + "\n\n") if pm.running_log.size > 1 }
     else
       raise Exception.new "Invalid command"
     end
