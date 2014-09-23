@@ -13,6 +13,8 @@ File.open(ARGV[0], "r") do |infile|
       is_valid = Command.validate_commmand(command)
       if is_valid
         Command.execute_command(command, pm)
+      else
+        pm.log_error
       end
 
       pm = ProcessManager.new if line.include? "init"
