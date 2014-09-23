@@ -18,6 +18,12 @@ class ProcessManager
   end
 
   def create(pid, priority)
+    existing = get_process(pid)
+    if existing
+      log_error
+      return
+    end
+
     running = @ready_list.find_running
     p = Pprocess.new(pid, :ready, @ready_list, priority)
     @creation_tree.insert(p, running)# - Add process p to Creation_Tree as child of currently running process
