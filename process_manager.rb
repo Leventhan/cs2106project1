@@ -109,8 +109,12 @@ class ProcessManager
   # Printer methods
   def print_running
     pid = @ready_list.find_running.pid
-    p "Process #{pid} is running"
+    # p "Process #{pid} is running"
     @running_log << pid
+  end
+
+  def print_error
+    @running_log << "error"
   end
 
   def print_ready_processes
